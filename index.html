@@ -1,0 +1,716 @@
+<!DOCTYPE html>
+<html lang="en-GB">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+<title>Duties</title>
+<meta name="theme-color" content="#121828">
+<meta name="apple-mobile-web-app-capable" content="yes">
+<meta name="mobile-web-app-capable" content="yes">
+<meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
+<meta name="apple-mobile-web-app-title" content="Duties">
+<link rel="manifest" href="manifest.webmanifest">
+<link rel="apple-touch-icon" href="icon-180.png">
+<link rel="icon" href="icon-192.png">
+<style>
+/* VOICE: devoted, playful, premium. Kaden's own app for keeping the Supreme Leader's house to her standard.
+   IDEA: a grand hotel's housekeeping card for a household of two: her rules, his duties, her stamp.
+   COLOUR and TYPE: ivory paper (black in dark mode), a deep navy header band, one brass accent for progress and praise; the phone's serif for headlines and numbers, the system font for everything else.
+   LAYOUT: one column up to 560px, a navy band at the top of each tab, a frosted tab bar at the bottom, sheets slide up. */
+:root{color-scheme:light dark;--bg:light-dark(#f3efe6,#000);--card:light-dark(#fffdf8,#151519);--ink:light-dark(#161922,#f3f1eb);--mute:light-dark(#857f72,#9b9890);--line:light-dark(#e6dfd0,#2a2a2f);--fill:light-dark(#ebe5d8,#232328);--b:#c9a24a;--bt:light-dark(#86640f,#e3bf6c);--bs:light-dark(#f4ead0,#2a2312);--r:light-dark(#b02e3c,#ff8290);--rs:light-dark(#f8e2e4,#38151a);--nv:#121828;--nvi:#f3f1eb;--nvm:#9ba1b5;--serif:ui-serif,'New York','Iowan Old Style',Palatino,Georgia,serif;--sans:-apple-system,BlinkMacSystemFont,'SF Pro Text',system-ui,'Segoe UI',Roboto,sans-serif;--ease:cubic-bezier(.2,.8,.2,1)}
+:root[data-theme=light]{color-scheme:light}:root[data-theme=dark]{color-scheme:dark}
+[hidden]{display:none!important}
+*{box-sizing:border-box;min-width:0;-webkit-tap-highlight-color:transparent}
+html{-webkit-text-size-adjust:100%}
+body{margin:0;background:var(--bg);color:var(--ink);font:16px/1.45 var(--sans);-webkit-font-smoothing:antialiased;overflow-x:clip;padding-bottom:calc(100px + env(safe-area-inset-bottom))}
+body.locked{overflow:hidden}
+button{font:inherit;color:inherit;cursor:pointer;border:0;background:none;padding:0;text-align:inherit}
+button:disabled{cursor:default;opacity:.4}
+input,select,textarea{font:inherit;color:inherit}
+:focus-visible{outline:3px solid var(--b);outline-offset:2px}
+.ic{width:20px;height:20px;flex:none}
+.sbar{position:fixed;inset:0 0 auto;height:env(safe-area-inset-top);background:var(--nv);z-index:30}
+.in{max-width:560px;margin:0 auto;padding:0 16px}
+
+/* Header band */
+.band{background:radial-gradient(90% 75% at 100% 0%,rgba(201,162,74,.32),rgba(201,162,74,0) 62%),radial-gradient(70% 60% at 0% 110%,rgba(88,108,170,.22),rgba(88,108,170,0) 70%),var(--nv);color:var(--nvi);border-radius:0 0 30px 30px;padding:calc(env(safe-area-inset-top) + 16px) 0 20px;margin-bottom:6px}
+.kick{font-size:12.5px;font-weight:700;letter-spacing:.12em;text-transform:uppercase;color:var(--b)}
+.date{font-size:14.5px;color:var(--nvm);margin-top:3px}
+.h1{font:500 31px/1.1 var(--serif);letter-spacing:-.01em;margin:14px 0 0;text-wrap:balance}
+.sub{color:var(--nvm);font-size:15px;margin:8px 0 0}
+.htop{display:flex;justify-content:space-between;align-items:flex-start;gap:16px}
+.ring{position:relative;width:82px;height:82px;flex:none;margin-top:-2px}
+.ring svg{width:100%;height:100%;transform:rotate(-90deg)}
+.rt{fill:none;stroke:rgba(255,255,255,.12);stroke-width:7}
+.rp{fill:none;stroke:var(--b);stroke-width:7;stroke-linecap:round;transition:stroke-dashoffset .7s var(--ease)}
+.ring div{position:absolute;inset:0;display:grid;place-content:center;text-align:center;line-height:1}
+.ring b{font:500 26px var(--serif);font-variant-numeric:tabular-nums}
+.ring span{font-size:11px;color:var(--nvm);margin-top:4px}
+.ring.full .rt{stroke:rgba(201,162,74,.25)}
+.stats{display:grid;grid-template-columns:repeat(3,minmax(0,1fr));gap:8px;margin-top:18px}
+.stat{background:rgba(255,255,255,.065);border-radius:16px;padding:11px 12px 10px}
+.stat b{display:flex;align-items:center;gap:5px;font:500 22px/1.15 var(--serif);font-variant-numeric:tabular-nums;white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
+.stat b.sm{font:600 15px/1.25 var(--sans);white-space:normal;min-height:27px;display:flex;align-items:center}
+.stat b .ic{width:17px;height:17px;color:var(--b)}
+.stat span{display:block;font-size:12px;color:var(--nvm);margin-top:2px;line-height:1.3}
+.chip{display:inline-flex;align-items:center;gap:8px;margin-top:14px;border:2px solid currentColor;border-radius:10px;padding:5px 11px;font-weight:800;font-size:12.5px;letter-spacing:.14em;text-transform:uppercase;transform:rotate(-1.5deg)}
+.chip.approved{color:var(--b)}.chip.passable{color:#c9ccd8}.chip.redo{color:#ff8290}
+.chip .ic{width:16px;height:16px}
+.hnote{font:italic 15px/1.4 var(--serif);color:var(--nvi);opacity:.9;margin:8px 0 0}
+.practice{display:inline-block;margin-top:10px;font-size:13px;font-weight:600;color:var(--nv);background:var(--b);border-radius:99px;padding:4px 11px}
+
+/* Sections and duty rows */
+.sec{margin-top:22px}
+.sh{display:flex;align-items:center;gap:11px;padding:0 4px 9px}
+.si{width:32px;height:32px;border-radius:11px;background:var(--bs);color:var(--bt);display:grid;place-items:center;flex:none}
+.si .ic{width:18px;height:18px}
+.sh b{display:block;font-weight:650;font-size:17px;line-height:1.2}
+.sh small{display:block;color:var(--mute);font-size:13px}
+.pill{margin-left:auto;font-size:12px;font-weight:700;color:var(--bt);background:var(--bs);border-radius:99px;padding:4px 10px;white-space:nowrap}
+.list{background:var(--card);border-radius:22px;overflow:hidden}
+.duty{display:flex;align-items:center;gap:14px;width:100%;padding:13px 16px;min-height:70px;position:relative}
+.duty+.duty::before,.erow+.erow::before,.srow+.srow::before{content:'';position:absolute;top:0;left:62px;right:0;height:1px;background:var(--line)}
+.srow+.srow::before{left:16px}
+.ck{width:30px;height:30px;border-radius:50%;border:2px solid var(--line);display:grid;place-items:center;flex:none;color:transparent;transition:background .25s,border-color .25s,color .25s}
+.ck .ic{width:17px;height:17px;stroke-width:2.6}
+.duty.on .ck{background:var(--b);border-color:var(--b);color:#fff}
+.duty.just .ck{animation:pop .4s var(--ease)}
+@keyframes pop{0%{transform:scale(.6)}60%{transform:scale(1.14)}100%{transform:scale(1)}}
+.dt{flex:1}
+.dt b{display:block;font-weight:600;font-size:16.5px;line-height:1.25;transition:color .2s}
+.dt small{display:block;color:var(--mute);font-size:13.5px;line-height:1.35;margin-top:2px}
+.duty.on .dt b{color:var(--mute)}
+.dt small.warn{color:var(--r)}
+.tm{font-size:12.5px;color:var(--bt);font-weight:650;font-variant-numeric:tabular-nums;flex:none}
+.away .list{opacity:.55}
+
+/* Action buttons */
+.acts{display:grid;grid-template-columns:1fr 1fr;gap:10px;margin-top:24px}
+.act{display:flex;flex-direction:column;align-items:flex-start;gap:10px;background:var(--card);border-radius:20px;padding:15px 16px;min-height:104px}
+.act .ic{width:24px;height:24px;color:var(--bt)}
+.act b{display:block;font-weight:650;font-size:16px;line-height:1.2}
+.act small{display:block;color:var(--mute);font-size:12.5px;line-height:1.3;margin-top:2px}
+.act.main{background:var(--nv);color:var(--nvi)}
+.act.main .ic{color:var(--b)}.act.main small{color:var(--nvm)}
+.tog{display:flex;align-items:center;gap:14px;width:100%;background:var(--card);border-radius:20px;padding:12px 16px;min-height:64px;margin-top:10px}
+.tog .dt b{font-size:15.5px}
+.sw{width:51px;height:31px;border-radius:99px;background:var(--fill);position:relative;flex:none;transition:background .25s}
+.sw::after{content:'';position:absolute;top:2px;left:2px;width:27px;height:27px;border-radius:50%;background:#fff;box-shadow:0 2px 6px rgba(0,0,0,.2);transition:transform .3s var(--ease)}
+[aria-checked=true] .sw{background:var(--b)}
+[aria-checked=true] .sw::after{transform:translateX(20px)}
+.foot{color:var(--mute);font-size:13px;line-height:1.45;text-align:center;margin:18px 12px 0}
+
+/* Cards */
+.lab2{font-size:13px;font-weight:700;letter-spacing:.08em;text-transform:uppercase;color:var(--mute);margin:26px 6px 9px}
+.card{background:var(--card);border-radius:22px;padding:16px 18px;margin-top:12px}
+.ms{display:block}
+.msh{display:flex;justify-content:space-between;align-items:baseline;gap:10px}
+.msh b{font:500 20px/1.2 var(--serif)}
+.msh span{font:500 18px var(--serif);color:var(--bt);font-variant-numeric:tabular-nums}
+.ms small{display:block;color:var(--mute);font-size:14px;margin-top:3px}
+.bar{position:relative;height:10px;border-radius:99px;background:var(--fill);margin-top:14px;overflow:hidden}
+.bar i{position:absolute;inset:0 auto 0 0;background:linear-gradient(90deg,#b08a35,var(--b));border-radius:99px;transition:width .7s var(--ease)}
+.ms.done{display:flex;gap:14px;align-items:center;background:var(--nv);color:var(--nvi)}
+.ms.done .ic{width:36px;height:36px;color:var(--b)}
+.ms.done b{display:block;font:500 20px/1.2 var(--serif)}
+.ms.done small{color:var(--nvm)}
+.big{display:flex;align-items:flex-end;gap:14px;margin-top:6px}
+.bn{font:500 92px/.9 var(--serif);color:var(--b);font-variant-numeric:tabular-nums;letter-spacing:-.02em}
+.bl{font-weight:650;font-size:18px;padding-bottom:6px}
+.bl small{display:block;font-weight:500;font-size:14px;color:var(--nvm)}
+
+/* Calendar */
+.calh{display:flex;align-items:center;justify-content:space-between;margin-bottom:10px}
+.calh b{font:500 19px var(--serif)}
+.calh button{width:40px;height:40px;border-radius:12px;display:grid;place-items:center;color:var(--bt)}
+.calh button:disabled{opacity:.25}
+.wdh,.grid{display:grid;grid-template-columns:repeat(7,minmax(0,1fr));gap:4px;text-align:center}
+.wdh span{font-size:11.5px;font-weight:700;color:var(--mute);padding-bottom:4px}
+.cd{position:relative;aspect-ratio:1/1.06;border-radius:12px;display:flex;flex-direction:column;align-items:center;justify-content:center;gap:5px;font-size:14px;font-weight:600;font-variant-numeric:tabular-nums}
+button.cd:active{background:var(--fill)}
+.cd.fut,.cd.pre{color:var(--mute);opacity:.55}
+.cd.today{box-shadow:inset 0 0 0 2px var(--ink)}
+.cd.start{box-shadow:inset 0 0 0 2px var(--b)}
+.cd.today.start{box-shadow:inset 0 0 0 2px var(--ink)}
+.mk{width:8px;height:8px;border-radius:50%}
+.mk.full{background:var(--b)}
+.mk.partial{box-shadow:inset 0 0 0 2px var(--b)}
+.mk.none{width:6px;height:6px;background:var(--r);opacity:.75}
+.mk.away{width:10px;height:2px;border-radius:2px;background:var(--mute)}
+.mk.blank{background:transparent}
+.cd i{position:absolute;top:5px;right:6px;width:6px;height:6px;border-radius:50%}
+.cd i.approved{background:var(--b)}.cd i.passable{background:var(--mute)}.cd i.redo{background:var(--r)}
+.legend{display:flex;flex-wrap:wrap;gap:6px 14px;justify-content:center;margin-top:12px;font-size:12.5px;color:var(--mute)}
+.legend span{display:inline-flex;align-items:center;gap:6px}
+
+/* Ranks */
+.rank{display:flex;align-items:center;gap:13px;padding:11px 0;position:relative}
+.rank+.rank{border-top:1px solid var(--line)}
+.rank .si{background:var(--fill);color:var(--mute)}
+.rank.got .si{background:var(--bs);color:var(--bt)}
+.rank.cur .si{background:var(--b);color:#fff}
+.rank b{display:block;font-weight:650;font-size:15.5px}
+.rank small{display:block;color:var(--mute);font-size:13px}
+.rank .dy{margin-left:auto;font-size:13px;font-weight:700;color:var(--mute);white-space:nowrap}
+.rank.cur .dy{color:var(--bt)}
+.rank:not(.got) b{color:var(--mute)}
+
+/* Standards */
+.rules p{font:italic 18px/1.4 var(--serif);margin:0 0 10px}
+.attr{font-size:14px;color:var(--bt);font-weight:650;margin-top:4px}
+.link{color:var(--bt);font-weight:650;font-size:15px;margin-top:12px;min-height:40px}
+.erow{display:flex;align-items:center;gap:14px;width:100%;padding:12px 16px;min-height:62px;position:relative}
+.erow .chv{color:var(--mute);width:18px;height:18px}
+.erow.add b{color:var(--bt)}
+.erow.danger b{color:var(--r)}
+.erow.danger .si{background:var(--rs);color:var(--r)}
+.srow{display:flex;align-items:center;justify-content:space-between;gap:12px;padding:12px 16px;min-height:56px;position:relative}
+.srow span{font-weight:550}
+.srow input,.srow select{border:0;background:var(--fill);border-radius:10px;padding:7px 10px;font-size:16px;color:var(--bt);font-weight:600;text-align:right;max-width:58%;-webkit-appearance:none;appearance:none}
+.srow input[type=date]{min-height:36px}
+
+/* Tab bar */
+.tabs{position:fixed;left:0;right:0;bottom:0;z-index:20;background:light-dark(rgba(250,247,240,.84),rgba(18,18,22,.84));-webkit-backdrop-filter:saturate(1.6) blur(22px);backdrop-filter:saturate(1.6) blur(22px);border-top:1px solid var(--line);padding:5px 0 calc(5px + env(safe-area-inset-bottom))}
+.tabs .in{display:grid;grid-template-columns:repeat(3,1fr)}
+.tab{display:grid;justify-items:center;align-content:center;gap:3px;font-size:11px;font-weight:650;color:var(--mute);min-height:52px;text-align:center}
+.tab .ic{width:25px;height:25px}
+.tab[aria-current=page]{color:var(--bt)}
+
+/* Sheets */
+.scrim{position:fixed;inset:0;z-index:40;background:rgba(8,10,18,.5);display:flex;align-items:flex-end;justify-content:center;animation:fade .25s}
+.sheet{background:var(--bg);width:100%;max-width:560px;max-height:93vh;max-height:93dvh;overflow:auto;-webkit-overflow-scrolling:touch;overscroll-behavior:contain;border-radius:28px 28px 0 0;padding:10px 18px calc(22px + env(safe-area-inset-bottom));animation:up .38s var(--ease)}
+@keyframes fade{from{opacity:0}}
+@keyframes up{from{transform:translateY(100%)}}
+.grab{width:38px;height:5px;border-radius:9px;background:var(--line);margin:0 auto 14px}
+.sheet h2{font:500 27px/1.12 var(--serif);margin:4px 0 6px;letter-spacing:-.01em;text-wrap:balance}
+.sheet .kick{color:var(--bt)}
+.lede{color:var(--mute);margin:0 0 18px;font-size:15px;line-height:1.45}
+.lab{font-size:13px;font-weight:700;letter-spacing:.06em;text-transform:uppercase;color:var(--mute);margin:18px 4px 8px}
+.field{display:block;background:var(--card);border-radius:16px;padding:10px 14px 8px;margin-bottom:10px}
+.field span{display:block;font-size:12.5px;font-weight:650;color:var(--mute)}
+.field input,.field textarea{display:block;width:100%;border:0;background:transparent;font-size:17px;padding:4px 0;outline:none;resize:none}
+.field input[type=date]{-webkit-appearance:none;appearance:none;min-height:32px;text-align:left}
+.seg{display:flex;background:var(--fill);border-radius:14px;padding:3px;gap:2px}
+.seg button{flex:1;color:var(--mute);font-weight:600;font-size:14.5px;border-radius:11px;min-height:42px;text-align:center}
+.seg button[aria-pressed=true]{background:var(--card);color:var(--ink);box-shadow:0 1px 3px rgba(0,0,0,.12)}
+.wds{display:grid;grid-template-columns:repeat(7,1fr);gap:6px;margin-top:10px}
+.wds button{min-height:44px;border-radius:12px;background:var(--card);font-weight:650;font-size:14px;color:var(--mute);text-align:center}
+.wds button[aria-pressed=true]{background:var(--b);color:#fff}
+.btn{display:flex;align-items:center;justify-content:center;gap:8px;width:100%;min-height:54px;border-radius:16px;font-weight:650;font-size:17px;background:var(--ink);color:var(--bg);margin-top:16px;text-align:center}
+.btn .ic{width:20px;height:20px}
+.btn.brass{background:var(--b);color:#1b1503}
+.btn.ghost{background:var(--card);color:var(--ink);margin-top:10px}
+.btn.danger{background:var(--card);color:var(--r);margin-top:10px}
+.btn.danger.armed{background:var(--r);color:#fff}
+.tip{background:var(--card);border-radius:16px;padding:12px 14px;font-size:14px;color:var(--mute);line-height:1.45;margin-top:6px}
+.tip b{display:block;color:var(--ink);font-size:15px;margin-bottom:2px}
+.emb{width:64px;height:64px;border-radius:20px;background:var(--nv);color:var(--b);display:grid;place-items:center;margin:4px 0 14px}
+.emb .ic{width:34px;height:34px}
+.rep{display:block;width:100%;border-radius:18px;box-shadow:0 10px 30px rgba(0,0,0,.18)}
+.mini{padding:4px 0}
+.mrow{display:flex;align-items:center;gap:12px;padding:9px 16px;font-size:15.5px;font-weight:550}
+.mrow .mk2{width:24px;height:24px;border-radius:50%;display:grid;place-items:center;flex:none}
+.mrow .mk2 .ic{width:14px;height:14px;stroke-width:3}
+.mrow.ok .mk2{background:var(--b);color:#fff}
+.mrow.no{color:var(--mute)}
+.mrow.no .mk2{background:var(--rs);color:var(--r)}
+.verd{display:grid;grid-template-columns:repeat(3,minmax(0,1fr));gap:8px}
+.vo{background:var(--card);border-radius:16px;padding:14px 8px 12px;text-align:center;border:2px solid transparent;transition:border-color .2s,background .2s}
+.vo b{display:block;font-weight:800;font-size:13.5px;letter-spacing:.1em;text-transform:uppercase}
+.vo small{display:block;font-size:12px;color:var(--mute);margin-top:3px;line-height:1.3}
+.vo.approved b{color:var(--bt)}.vo.redo b{color:var(--r)}.vo.passable b{color:var(--mute)}
+.vo.approved[aria-pressed=true]{border-color:var(--b);background:var(--bs)}
+.vo.passable[aria-pressed=true]{border-color:var(--mute);background:var(--fill)}
+.vo.redo[aria-pressed=true]{border-color:var(--r);background:var(--rs)}
+.inote{background:var(--card);border-radius:16px;padding:12px 14px;margin-top:12px}
+.inote .chip{margin-top:0;transform:rotate(-1.5deg)}
+.inote .chip.approved{color:var(--bt)}.inote .chip.passable{color:var(--mute)}.inote .chip.redo{color:var(--r)}
+.inote p{font:italic 16px/1.4 var(--serif);margin:10px 0 0}
+
+/* Toast, overlay, effects */
+.toast{position:fixed;left:50%;bottom:calc(86px + env(safe-area-inset-bottom));transform:translateX(-50%);z-index:45;width:min(528px,calc(100% - 32px));background:var(--nv);color:var(--nvi);border-radius:16px;padding:12px 12px 12px 16px;display:flex;align-items:center;gap:12px;font-size:15px;font-weight:550;box-shadow:0 12px 30px rgba(0,0,0,.28);animation:tin .35s var(--ease)}
+.toast span{flex:1}
+.toast button{background:var(--b);color:#1b1503;font-weight:700;border-radius:11px;padding:0 14px;min-height:38px;font-size:14px}
+@keyframes tin{from{opacity:0;transform:translate(-50%,16px)}}
+.over{position:fixed;inset:0;z-index:50;background:radial-gradient(circle at 50% 28%,rgba(201,162,74,.38),rgba(201,162,74,0) 58%),var(--nv);color:var(--nvi);display:flex;flex-direction:column;align-items:center;justify-content:center;text-align:center;padding:30px 28px calc(30px + env(safe-area-inset-bottom));animation:fade .35s}
+.over .emb{width:96px;height:96px;border-radius:30px;background:rgba(201,162,74,.14);margin:0 0 22px;animation:rise .7s var(--ease)}
+.over .emb .ic{width:52px;height:52px}
+.over .kick{font-size:13px}
+.over h2{font:500 40px/1.08 var(--serif);margin:10px 0 12px;text-wrap:balance;max-width:420px}
+.over p{color:var(--nvm);font-size:16.5px;max-width:360px;margin:0 0 26px}
+.over .btn{max-width:360px}
+.over .btn.ghost{background:rgba(255,255,255,.08);color:var(--nvi)}
+@keyframes rise{from{transform:scale(.6) rotate(-10deg);opacity:0}}
+.bigstamp{position:fixed;inset:0;z-index:55;display:grid;place-items:center;pointer-events:none}
+.bigstamp div{border:6px solid currentColor;border-radius:20px;padding:14px 28px;font:900 44px var(--sans);letter-spacing:.14em;text-transform:uppercase;background:light-dark(rgba(255,253,248,.92),rgba(21,21,25,.92));animation:slam .55s cubic-bezier(.3,1.6,.5,1) forwards;transform:rotate(-8deg)}
+.bigstamp.approved div{color:var(--bt)}.bigstamp.passable div{color:var(--mute)}.bigstamp.redo div{color:var(--r)}
+@keyframes slam{0%{transform:scale(2.4) rotate(-8deg);opacity:0}100%{transform:scale(1) rotate(-8deg);opacity:1}}
+.fx{position:fixed;inset:0;width:100%;height:100%;pointer-events:none;z-index:60}
+@media (prefers-reduced-motion:reduce){*,*::before,*::after{animation:none!important;transition:none!important}}
+</style>
+</head>
+<body>
+<div class="sbar"></div>
+<main id="v-today" class="view"></main>
+<main id="v-record" class="view" hidden></main>
+<main id="v-standards" class="view" hidden></main>
+<nav class="tabs" aria-label="Sections"><div class="in" id="tabs"></div></nav>
+<div id="scrim" class="scrim" hidden><div id="sheet" class="sheet" role="dialog" aria-modal="true"></div></div>
+<div id="toast" class="toast" role="status" hidden></div>
+<div id="over" class="over" role="dialog" aria-modal="true" hidden></div>
+<div id="bigstamp" class="bigstamp" hidden><div></div></div>
+<canvas id="fx" class="fx" hidden></canvas>
+<input type="file" id="restore" accept="application/json,.json" hidden>
+<script>
+'use strict';
+const KEY='duties.v1';
+const $=s=>document.querySelector(s);
+const esc=s=>String(s??'').replace(/[&<>"']/g,c=>({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#39;'}[c]));
+const cap=s=>s?s[0].toUpperCase()+s.slice(1):s;
+const addr=()=>S.her.replace(/^the\s+/i,'');
+const pad=n=>String(n).padStart(2,'0');
+const plural=(n,w)=>`${n} ${w}${n===1?'':'s'}`;
+
+const P={
+ check:'<path d="M5 12.5l4.2 4.2L19 7"/>',
+ sun:'<circle cx="12" cy="12" r="4"/><path d="M12 2.5v2M12 19.5v2M4.6 4.6L6 6M18 18l1.4 1.4M2.5 12h2M19.5 12h2M4.6 19.4L6 18M18 6l1.4-1.4"/>',
+ plate:'<circle cx="12" cy="12" r="8.5"/><circle cx="12" cy="12" r="4.5"/>',
+ moon:'<path d="M20 14.5A8.5 8.5 0 019.5 4a8.5 8.5 0 1010.5 10.5z"/>',
+ basket:'<path d="M3.5 10h17l-1.6 8.6a2 2 0 01-2 1.6H7.1a2 2 0 01-2-1.6zM8.5 10l3-6M15.5 10l-3-6M9 14v3M15 14v3M12 14v3"/>',
+ crown:'<path d="M3 8l4.5 4L12 5l4.5 7L21 8l-2 11H5z"/>',
+ flame:'<path d="M12 3c.8 3.2 5 5.3 5 10.2a5 5 0 01-10 0c0-2.1 1-3.7 2.2-4.8.1 2 .9 3.1 2 3.1 0-3.1-1.3-5 .8-8.5z"/>',
+ share:'<path d="M12 3.5v11M7.8 7.6L12 3.5l4.2 4.1M5 12.5v6a2 2 0 002 2h10a2 2 0 002-2v-6"/>',
+ stamp:'<path d="M10 3.5h4a1 1 0 011 1.1L14.2 11H9.8L9 4.6a1 1 0 011-1.1zM5 11h14a1 1 0 011 1v3.5H4V12a1 1 0 011-1zM4 20h16"/>',
+ cal:'<rect x="3.5" y="5" width="17" height="15.5" rx="3"/><path d="M3.5 10h17M8 3v4M16 3v4"/>',
+ scroll:'<path d="M8 4h10a2 2 0 012 2v1.5h-4M8 4a2 2 0 00-2 2v12a2 2 0 002 2h8a2 2 0 002-2V7.5M8 4a2 2 0 012 2v1.5M10 12h5M10 16h5"/>',
+ chev:'<path d="M9 6l6 6-6 6"/>',
+ left:'<path d="M15 6l-6 6 6 6"/>',
+ plus:'<path d="M12 5v14M5 12h14"/>',
+ x:'<path d="M7 7l10 10M17 7L7 17"/>',
+ bag:'<rect x="3.5" y="7.5" width="17" height="12" rx="2.5"/><path d="M9 7.5v-2A1.5 1.5 0 0110.5 4h3A1.5 1.5 0 0115 5.5v2M3.5 12.5h17"/>',
+ save:'<path d="M12 4v11M7.5 10.5L12 15l4.5-4.5M5 19.5h14"/>',
+ up:'<path d="M12 20V9M7.5 13.5L12 9l4.5 4.5M5 4.5h14"/>',
+ reset:'<path d="M4 12a8 8 0 108-8 8 8 0 00-6 2.7M4 4v3.5h3.5"/>'
+};
+const ic=(n,c='')=>`<svg class="ic ${c}" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true">${P[n]}</svg>`;
+
+const BLK={
+ morning:{name:'Morning reset',short:'Morning',sub:'Before work · about 15 minutes',icon:'sun'},
+ day:{name:'Through the day',short:'Day',sub:'After every meal',icon:'plate'},
+ night:{name:'Night close-down',short:'Night',sub:'After work · 5 minutes',icon:'moon'},
+ needed:{name:'As needed',short:'As needed',sub:'The moment it’s due',icon:'basket'}
+};
+const ORDER=['morning','day','night','needed'];
+const RANKS=[
+ {d:0,n:'On probation',l:'Prove yourself.'},
+ {d:3,n:'Trainee',l:'Three days in. A start.'},
+ {d:7,n:'Dependable',l:'A full week. She’s noticed.'},
+ {d:15,n:'Proved her wrong',l:'Past the two weeks she bet on.'},
+ {d:30,n:'Elite',l:'A month of standards kept.'},
+ {d:60,n:'Head of Household',l:'This is just who you are now.'},
+ {d:100,n:'Legend',l:'{HER} is pleased.'}
+];
+const VERD={approved:{n:'Approved',s:'Up to standard'},passable:{n:'Passable',s:'Could be better'},redo:{n:'Redo',s:'Not good enough'}};
+const WD=[[1,'Mo'],[2,'Tu'],[3,'We'],[4,'Th'],[5,'Fr'],[6,'Sa'],[0,'Su']];
+const WDN=['Sun','Mon','Tue','Wed','Thu','Fri','Sat'];
+const DEFAULT_DUTIES=[
+ {id:'vacuum',title:'Vacuum the whole house',hint:'Every room. Under the sofa and the bed too.',block:'morning',freq:'daily'},
+ {id:'trash',title:'Take the trash out',hint:'Every bin, every single day.',block:'morning',freq:'daily'},
+ {id:'sink-am',title:'Sink empty before work',hint:'Dishes washed straight after eating.',block:'day',freq:'daily'},
+ {id:'counters',title:'Counters and table wiped',hint:'After every meal.',block:'day',freq:'daily'},
+ {id:'cans',title:'Can and cup sweep',hint:'Not a single can left lying around.',block:'night',freq:'daily'},
+ {id:'sink-pm',title:'Sink empty before bed',hint:'Nothing left to soak overnight.',block:'night',freq:'daily'},
+ {id:'laundry',title:'Laundry to the shop',hint:'Basket full? It goes the same day.',block:'needed',freq:'needed'}
+];
+const DEFAULT_RULES=['Make the house as clean as possible','No cans littering around','Trash always thrown everyday','Vacuumed everyday','Dishes washed immediately','Laundry is brought to the shop immediately'];
+
+/* ---------- State ---------- */
+let mem=null,S;
+function fresh(){return{v:1,startDate:'2026-12-15',her:'the Supreme Leader',me:'Kaden',rollover:4,duties:DEFAULT_DUTIES.map(d=>({...d})),rules:[...DEFAULT_RULES],log:{},needed:{},seen:{rank:0,proved:null},onboarded:false}}
+function migrate(o){const f=fresh();o={...f,...o};o.seen={...f.seen,...(o.seen||{})};if(!Array.isArray(o.duties))o.duties=f.duties;if(!Array.isArray(o.rules))o.rules=f.rules;o.log=o.log||{};o.needed=o.needed||{};o.rollover=Number(o.rollover)||0;return o}
+function load(){try{const t=localStorage.getItem(KEY);return t?JSON.parse(t):null}catch(e){return mem}}
+function save(){try{localStorage.setItem(KEY,JSON.stringify(S))}catch(e){mem=JSON.parse(JSON.stringify(S))}}
+S=migrate(load()||fresh());
+
+/* ---------- Dates ---------- */
+const keyOf=d=>`${d.getFullYear()}-${pad(d.getMonth()+1)}-${pad(d.getDate())}`;
+const keyFromTs=ts=>keyOf(new Date(ts-S.rollover*36e5));
+const todayKey=()=>keyFromTs(Date.now());
+const parseKey=k=>{const[y,m,d]=k.split('-').map(Number);return new Date(y,m-1,d,12)};
+const addDays=(k,n)=>{const d=parseKey(k);d.setDate(d.getDate()+n);return keyOf(d)};
+const diffDays=(a,b)=>Math.round((parseKey(b)-parseKey(a))/864e5);
+const longDate=k=>parseKey(k).toLocaleDateString('en-GB',{weekday:'long',day:'numeric',month:'long'});
+const shortDate=k=>parseKey(k).toLocaleDateString('en-GB',{weekday:'short',day:'numeric',month:'short'});
+const hm=ts=>new Date(ts).toLocaleTimeString('en-GB',{hour:'2-digit',minute:'2-digit'});
+
+/* ---------- Duties and days ---------- */
+const dutyById=id=>S.duties.find(d=>d.id===id);
+const active=()=>S.duties.filter(d=>!d.archived);
+function lg(k){const L=S.log[k]||(S.log[k]={});L.done=L.done||{};return L}
+function computeDue(k){const wd=parseKey(k).getDay();return active().filter(d=>d.freq==='daily'||(d.freq==='days'&&(d.days||[]).includes(wd))).map(d=>d.id)}
+function dueFor(k){const L=S.log[k];return L&&L.due?L.due:computeDue(k)}
+function status(k){const L=S.log[k]||{};if(L.away)return'away';const due=dueFor(k);if(!due.length)return'rest';const n=due.filter(id=>L.done&&L.done[id]).length;return n===due.length?'full':n?'partial':'none'}
+const neutral=s=>s==='away'||s==='rest';
+function streakInfo(){
+ const t=todayKey();if(t<S.startDate)return{cur:0,best:0,kept:0};
+ let cur=0,k=t;const s0=status(t);if(s0!=='full'&&!neutral(s0))k=addDays(t,-1);
+ while(k>=S.startDate){const s=status(k);if(s==='full')cur++;else if(!neutral(s))break;k=addDays(k,-1)}
+ let best=0,run=0,kept=0;
+ for(let d=S.startDate;d<=t;d=addDays(d,1)){const s=status(d);if(s==='full'){run++;kept++;if(run>best)best=run}else if(!neutral(s)&&d!==t)run=0}
+ return{cur,best:Math.max(best,cur),kept}}
+function rankIndex(n){let i=0;RANKS.forEach((r,j)=>{if(n>=r.d)i=j});return i}
+const rankLine=r=>r.l.replace('{HER}',cap(S.her));
+const neededList=()=>active().filter(d=>d.freq==='needed');
+const neededOn=k=>neededList().filter(d=>(S.needed[d.id]||[]).some(ts=>keyFromTs(ts)===k));
+function lastNeeded(id){const a=S.needed[id]||[];return a.length?Math.max(...a):null}
+function repeatText(d){if(d.freq==='needed')return'As needed';if(d.freq==='days'){const ds=WD.filter(([i])=>(d.days||[]).includes(i)).map(([i])=>WDN[i]);return ds.length===7?'Every day':ds.join(', ')||'No days set'}return'Every day'}
+
+/* ---------- Rendering ---------- */
+let tab='today',just=null,calMonth=null;
+function render(){
+ const t=todayKey();
+ if(t>=S.startDate){const ri=rankIndex(streakInfo().cur);if(ri<S.seen.rank){S.seen.rank=ri;save()}}
+ renderTabs();renderToday();renderRecord();renderStandards();just=null}
+
+function renderTabs(){
+ const T=[['today','Today','sun'],['record','Record','cal'],['standards','Standards','scroll']];
+ $('#tabs').innerHTML=T.map(([id,n,i])=>`<button class="tab" data-tab="${id}" ${tab===id?'aria-current="page"':''}>${ic(i)}<span>${n}</span></button>`).join('');
+ for(const id of['today','record','standards'])$('#v-'+id).hidden=tab!==id}
+
+function renderToday(){
+ const t=todayKey(),pre=t<S.startDate,L=lg(t);
+ L.due=computeDue(t);
+ const due=L.due.map(dutyById).filter(Boolean),total=due.length,done=due.filter(d=>L.done[d.id]).length;
+ const st=streakInfo(),rk=RANKS[rankIndex(st.cur)],insp=L.insp;
+ let h;
+ if(pre){const n=diffDays(t,S.startDate);h=`Service begins in ${plural(n,'day')}.`}
+ else if(L.away)h='Off duty today. Your streak is safe.';
+ else if(insp&&insp.v==='redo')h=`${esc(cap(S.her))} wants a redo.`;
+ else if(insp&&insp.v==='approved'&&total&&done===total)h=`Approved by ${esc(S.her)}. Well done.`;
+ else if(total&&done===total)h='All duties done. She’ll notice.';
+ else if(done===0)h=`${esc(S.me)}, the house awaits.`;
+ else h=`${total-done} to go. Don’t stop now.`;
+ const C=2*Math.PI*34,frac=total?done/total:0;
+ const third=S.seen.proved||st.cur>=15?{b:`${st.best}`,s:'best streak',i:'crown'}:{b:`${15-st.cur}`,s:`${15-st.cur===1?'day':'days'} to prove her wrong`,i:'crown'};
+ let html=`<header class="band"><div class="in">
+  <div class="htop"><div><div class="kick">Duties</div><div class="date">${longDate(t)}</div></div>
+  <div class="ring${total&&done===total?' full':''}" role="img" aria-label="${done} of ${total} duties done"><svg viewBox="0 0 82 82"><circle class="rt" cx="41" cy="41" r="34"/><circle class="rp" cx="41" cy="41" r="34" stroke-dasharray="${C.toFixed(2)}" stroke-dashoffset="${(C*(1-frac)).toFixed(2)}"/></svg><div><b>${done}</b><span>of ${total}</span></div></div></div>
+  <h1 class="h1">${h}</h1>
+  ${pre?`<span class="practice">Practice run · your record starts ${shortDate(S.startDate)}</span>`:''}
+  ${insp?`<div class="chip ${insp.v}">${ic('stamp')}${VERD[insp.v].n}</div>${insp.note?`<p class="hnote">“${esc(insp.note)}”</p>`:''}`:''}
+  <div class="stats">
+   <div class="stat"><b>${ic('flame')}${st.cur}</b><span>day streak</span></div>
+   <div class="stat"><b class="sm">${esc(rk.n)}</b><span>rank</span></div>
+   <div class="stat"><b>${ic(third.i)}${third.b}</b><span>${third.s}</span></div>
+  </div></div></header><div class="in${L.away?' away':''}">`;
+ for(const b of['morning','day','night']){
+  const ds=due.filter(d=>d.block===b);if(!ds.length)continue;
+  const all=ds.every(d=>L.done[d.id]);
+  html+=`<section class="sec"><div class="sh"><span class="si">${ic(BLK[b].icon)}</span><div><b>${BLK[b].name}</b><small>${BLK[b].sub}</small></div>${all?'<span class="pill">Done</span>':''}</div><div class="list">${ds.map(d=>dutyRow(d,!!L.done[d.id],L.done[d.id],'tog')).join('')}</div></section>`}
+ const nd=neededList();
+ if(nd.length){
+  html+=`<section class="sec"><div class="sh"><span class="si">${ic(BLK.needed.icon)}</span><div><b>${BLK.needed.name}</b><small>${BLK.needed.sub}</small></div></div><div class="list">${nd.map(d=>{
+   const todays=(S.needed[d.id]||[]).filter(ts=>keyFromTs(ts)===t),on=todays.length>0,last=lastNeeded(d.id);
+   let hint=d.hint||'',warn=false;
+   if(on)hint=`Done today${d.hint?' · '+d.hint:''}`;
+   else if(last){const n=diffDays(keyFromTs(last),t);hint=`Last done ${n===1?'yesterday':plural(n,'day')+' ago'}`;if(n>=4){hint+=' · check the basket';warn=true}}
+   return`<button class="duty${on?' on':''}${just===d.id?' just':''}" data-need="${d.id}" aria-pressed="${on}"><span class="ck">${ic('check')}</span><span class="dt"><b>${esc(d.title)}</b>${hint?`<small${warn?' class="warn"':''}>${esc(hint)}</small>`:''}</span>${on?`<span class="tm">${hm(Math.max(...todays))}</span>`:''}</button>`}).join('')}</div></section>`}
+ if(!total&&!nd.length)html+=`<p class="foot">No duties set. Add some in Standards.</p>`;
+ html+=`<div class="acts"><button class="act main" data-act="report">${ic('share')}<div><b>Send her the report</b><small>Today’s card, ready to send</small></div></button><button class="act" data-act="inspect">${ic('stamp')}<div><b>Inspection</b><small>Hand her the phone to stamp it</small></div></button></div>
+ <button class="tog" data-act="away" role="switch" aria-checked="${!!L.away}"><span class="dt"><b>Away from the house today</b><small>Travel days pause your streak without breaking it.</small></span><span class="sw"></span></button>
+ <p class="foot">${pre?'Tick things off to try it out. Nothing counts until service begins.':'Your day closes at '+(S.rollover?pad(S.rollover)+':00':'midnight')+', so the night close-down after work still counts for today.'}</p></div>`;
+ $('#v-today').innerHTML=html}
+
+function dutyRow(d,on,ts,attr,k){
+ return`<button class="duty${on?' on':''}${just===d.id?' just':''}" data-${attr}="${k?k+'|':''}${d.id}" aria-pressed="${on}"><span class="ck">${ic('check')}</span><span class="dt"><b>${esc(d.title)}</b>${d.hint?`<small>${esc(d.hint)}</small>`:''}</span>${on&&ts?`<span class="tm">${hm(ts)}</span>`:''}</button>`}
+
+function renderRecord(){
+ const t=todayKey(),st=streakInfo(),ri=rankIndex(st.cur),rk=RANKS[ri];
+ const approved=Object.entries(S.log).filter(([k,L])=>k>=S.startDate&&k<=t&&L.insp&&L.insp.v==='approved').length;
+ if(!calMonth)calMonth=(t<S.startDate?S.startDate:t).slice(0,7);
+ const proved=S.seen.proved;
+ let html=`<header class="band"><div class="in"><div class="kick">Record</div>
+  <div class="big"><span class="bn">${st.cur}</span><span class="bl">day streak<small>${esc(rk.n)}</small></span></div>
+  <div class="stats"><div class="stat"><b>${ic('crown')}${st.best}</b><span>best streak</span></div><div class="stat"><b>${ic('check')}${st.kept}</b><span>days kept</span></div><div class="stat"><b>${ic('stamp')}${approved}</b><span>approved</span></div></div>
+ </div></header><div class="in">`;
+ html+=proved?`<section class="card ms done">${ic('crown')}<div><b>You proved her wrong.</b><small>Day 15 reached on ${shortDate(proved)}. She gave you two weeks.</small></div></section>`
+  :`<section class="card ms"><div class="msh"><b>Day 15: prove her wrong</b><span>${Math.min(st.cur,15)}/15</span></div><small>She said you’d forget about it after two weeks.</small><div class="bar"><i style="width:${Math.min(100,st.cur/15*100)}%"></i></div></section>`;
+ html+=`<h3 class="lab2">Calendar</h3><section class="card">${calendar(t)}</section>`;
+ html+=`<h3 class="lab2">Ranks</h3><section class="card" style="padding-top:6px;padding-bottom:6px">${RANKS.map((r,i)=>`<div class="rank${i<=ri?' got':''}${i===ri?' cur':''}"><span class="si">${i<=ri?ic(i===ri?'crown':'check'):ic('crown')}</span><div><b>${esc(r.n)}</b><small>${esc(rankLine(r))}</small></div><span class="dy">${i===ri?'Now':r.d===0?'Start':'Day '+r.d}</span></div>`).join('')}</section>`;
+ html+=`<p class="foot">Ranks follow your current streak. Miss a day and you start again from probation.</p></div>`;
+ $('#v-record').innerHTML=html}
+
+function calendar(t){
+ const[y,m]=calMonth.split('-').map(Number);
+ const first=new Date(y,m-1,1,12),lead=(first.getDay()+6)%7,dim=new Date(y,m,0).getDate();
+ const label=first.toLocaleDateString('en-GB',{month:'long',year:'numeric'});
+ const minM=(S.startDate<t?S.startDate:t).slice(0,7),maxM=(S.startDate>t?S.startDate:t).slice(0,7);
+ let g='';for(let i=0;i<lead;i++)g+='<span></span>';
+ for(let d=1;d<=dim;d++){
+  const k=`${y}-${pad(m)}-${pad(d)}`,fut=k>t,pre=k<S.startDate;
+  let mk='blank';const L=S.log[k];
+  if(!fut){const s=status(k);if(s==='full')mk='full';else if(s==='partial')mk='partial';else if(s==='away')mk='away';else if(s==='none'&&k!==t&&!pre)mk='none'}
+  if(pre&&mk!=='full'&&mk!=='partial')mk='blank';
+  const cls=['cd',fut?'fut':'',pre?'pre':'',k===t?'today':'',k===S.startDate?'start':''].join(' ');
+  const ins=L&&L.insp?`<i class="${L.insp.v}"></i>`:'';
+  g+=fut?`<span class="${cls}">${d}<span class="mk blank"></span></span>`:`<button class="${cls}" data-day="${k}" aria-label="${longDate(k)}">${ins}${d}<span class="mk ${mk}"></span></button>`}
+ return`<div class="calh"><button data-cal="-1" aria-label="Previous month" ${calMonth<=minM?'disabled':''}>${ic('left')}</button><b>${label}</b><button data-cal="1" aria-label="Next month" ${calMonth>=maxM?'disabled':''}>${ic('chev')}</button></div>
+ <div class="wdh">${['M','T','W','T','F','S','S'].map(w=>`<span>${w}</span>`).join('')}</div><div class="grid">${g}</div>
+ <div class="legend"><span><i class="mk full"></i>All done</span><span><i class="mk partial"></i>Some done</span><span><i class="mk none"></i>Missed</span><span><i class="mk away"></i>Away</span></div>`}
+
+function renderStandards(){
+ let html=`<header class="band"><div class="in"><div class="kick">Standards</div><h1 class="h1">Set by ${esc(S.her)}.</h1><p class="sub">Her rules, your duties, and how the app runs.</p></div></header><div class="in">
+ <h3 class="lab2">House rules</h3><section class="card rules">${S.rules.length?S.rules.map(r=>`<p>“${esc(r)}”</p>`).join(''):'<p style="font-style:normal;color:var(--mute);font-size:15px">No rules written yet.</p>'}<div class="attr">— ${esc(cap(S.her))}</div><button class="link" data-act="rules">Edit the rules</button></section>
+ <h3 class="lab2">Your duties</h3><section class="list">`;
+ for(const b of ORDER)for(const d of active().filter(x=>x.block===b))html+=`<button class="erow" data-edit="${d.id}"><span class="si">${ic(BLK[b].icon)}</span><span class="dt"><b>${esc(d.title)}</b><small>${b==='needed'?'As needed':BLK[b].short+' · '+repeatText(d)}</small></span>${ic('chev','chv')}</button>`;
+ html+=`<button class="erow add" data-act="add"><span class="si">${ic('plus')}</span><span class="dt"><b>Add a duty</b></span></button></section>
+ <h3 class="lab2">Settings</h3><section class="list">
+  <label class="srow"><span>Service starts</span><input type="date" id="set-start" value="${S.startDate}"></label>
+  <label class="srow"><span>She’s known as</span><input id="set-her" value="${esc(S.her)}" maxlength="30" autocomplete="off"></label>
+  <label class="srow"><span>Your name</span><input id="set-me" value="${esc(S.me)}" maxlength="20" autocomplete="off"></label>
+  <label class="srow"><span>New day starts at</span><select id="set-roll">${[0,2,3,4,5,6].map(h=>`<option value="${h}" ${S.rollover===h?'selected':''}>${h===0?'Midnight':pad(h)+':00'}</option>`).join('')}</select></label>
+ </section><p class="foot">Until then, it still counts as the day before, so the close-down after your shift lands on the right day.</p>
+ <h3 class="lab2">Your data</h3><section class="list">
+  <button class="erow" data-act="backup"><span class="si">${ic('save')}</span><span class="dt"><b>Save a backup</b><small>Download your whole record as a file</small></span></button>
+  <button class="erow" data-act="restore"><span class="si">${ic('up')}</span><span class="dt"><b>Restore from a backup</b></span></button>
+  <button class="erow danger" data-act="reset"><span class="si">${ic('reset')}</span><span class="dt"><b>Start over</b></span></button>
+ </section><p class="foot">Everything stays on this phone. Nothing is sent anywhere.</p></div>`;
+ $('#v-standards').innerHTML=html}
+
+/* ---------- Sheets, toasts, effects ---------- */
+function sheet(html,o={}){const sc=$('#scrim'),sh=$('#sheet');const top=sh.scrollTop;sh.innerHTML=html;sc.dataset.lock=o.lock?'1':'';if(sc.hidden){sc.hidden=false;document.body.classList.add('locked');sh.scrollTop=0}else sh.scrollTop=o.keep?top:0}
+function closeSheet(){$('#scrim').hidden=true;document.body.classList.remove('locked');sheetCtx=null}
+let toastT;
+function toast(msg,a){const el=$('#toast');clearTimeout(toastT);el.innerHTML=`<span>${esc(msg)}</span>${a?`<button>${esc(a.label)}</button>`:''}`;el.hidden=false;
+ if(a)el.querySelector('button').onclick=()=>{el.hidden=true;a.fn()};
+ toastT=setTimeout(()=>{el.hidden=true},a?6000:3200)}
+function confetti(){
+ if(matchMedia('(prefers-reduced-motion: reduce)').matches)return;
+ const c=$('#fx'),x=c.getContext('2d'),dpr=window.devicePixelRatio||1,W=innerWidth,H=innerHeight;c.width=W*dpr;c.height=H*dpr;c.hidden=false;x.setTransform(dpr,0,0,dpr,0,0);
+ const cols=['#c9a24a','#e8cf8e','#f3f1eb','#121828','#9a7424'];
+ const ps=Array.from({length:120},()=>({x:W/2+(Math.random()-.5)*90,y:H*.32,vx:(Math.random()-.5)*12,vy:-Math.random()*13-4,r:Math.random()*7+5,a:Math.random()*6,va:(Math.random()-.5)*.35,c:cols[Math.random()*cols.length|0]}));
+ const t0=performance.now();let last=t0;
+ (function f(now){const dt=Math.min(2,(now-last)/16.7);last=now;x.clearRect(0,0,W,H);
+  for(const p of ps){p.vy+=.38*dt;p.vx*=.99;p.x+=p.vx*dt;p.y+=p.vy*dt;p.a+=p.va*dt;x.save();x.translate(p.x,p.y);x.rotate(p.a);x.fillStyle=p.c;x.fillRect(-p.r/2,-p.r/4,p.r,p.r/2);x.restore()}
+  if(now-t0<2400)requestAnimationFrame(f);else{x.clearRect(0,0,W,H);c.hidden=true}})(t0)}
+
+/* ---------- Actions ---------- */
+function afterChange(k){
+ const s=status(k),L=lg(k);
+ if(k<S.startDate){if(s==='full'&&!L.celebrated){L.celebrated=1;save();confetti();toast('Practice run complete. Picture her face.')}return}
+ const st=streakInfo(),ri=rankIndex(st.cur);
+ if(st.cur>=15&&!S.seen.proved)S.seen.proved=todayKey();
+ let up=false;
+ if(ri>S.seen.rank){S.seen.rank=ri;up=true}else if(ri<S.seen.rank)S.seen.rank=ri;
+ const newlyFull=s==='full'&&!L.celebrated;
+ if(newlyFull)L.celebrated=1;
+ save();
+ if(newlyFull)confetti();
+ if(up)setTimeout(()=>rankUp(ri,st.cur),newlyFull?650:0);
+ else if(newlyFull&&k===todayKey())toast('All duties done. Send her the report?',{label:'Send',fn:()=>openReport()})}
+
+function toggle(id){const t=todayKey(),L=lg(t);if(L.done[id])delete L.done[id];else{L.done[id]=Date.now();just=id}save();afterChange(t);render()}
+function toggleNeeded(id){const t=todayKey(),a=S.needed[id]||(S.needed[id]=[]);const has=a.some(ts=>keyFromTs(ts)===t);
+ if(has)S.needed[id]=a.filter(ts=>keyFromTs(ts)!==t);else{a.push(Date.now());just=id;toast('Logged. That’s the standard.')}
+ save();render()}
+
+function rankUp(ri,cur){
+ const r=RANKS[ri],special=r.d===15,o=$('#over');
+ o.innerHTML=`<div class="emb">${ic('crown')}</div><div class="kick">Day ${cur}</div>
+ <h2>${special?'You proved her wrong.':'New rank: '+esc(r.n)}</h2>
+ <p>${special?'She said you’d forget about it after two weeks. You didn’t. Go and show her.':esc(rankLine(r))}</p>
+ <button class="btn brass" data-act="over-report">${ic('share')} Send her the report</button><button class="btn ghost" data-act="over-close">Carry on</button>`;
+ o.hidden=false;confetti()}
+
+/* Report card */
+function rr(x,a,b,w,h,r){x.beginPath();x.moveTo(a+r,b);x.arcTo(a+w,b,a+w,b+h,r);x.arcTo(a+w,b+h,a,b+h,r);x.arcTo(a,b+h,a,b,r);x.arcTo(a,b,a+w,b,r);x.closePath()}
+function spaced(x,t,a,b,sp){if('letterSpacing' in x){x.letterSpacing=sp+'px';x.fillText(t,a,b);x.letterSpacing='0px'}else{let cx=a;for(const ch of t){x.fillText(ch,cx,b);cx+=x.measureText(ch).width+sp}}}
+function clip(x,t,max){if(x.measureText(t).width<=max)return t;while(t.length>1&&x.measureText(t+'…').width>max)t=t.slice(0,-1);return t+'…'}
+function reportItems(k){const L=S.log[k]||{};const due=dueFor(k).map(dutyById).filter(Boolean);return[...due.map(d=>({t:d.title,ok:!!(L.done&&L.done[d.id])})),...neededOn(k).map(d=>({t:d.title,ok:true}))]}
+function drawReport(k){
+ const W=1080,H=1350,c=document.createElement('canvas');c.width=W;c.height=H;const x=c.getContext('2d');
+ const SERIF='"New York","Iowan Old Style",Georgia,"Times New Roman",serif',SANS='-apple-system,"SF Pro Text","Helvetica Neue",Helvetica,Arial,sans-serif';
+ let g=x.createLinearGradient(0,0,0,H);g.addColorStop(0,'#19223b');g.addColorStop(1,'#0b0f1a');x.fillStyle=g;x.fillRect(0,0,W,H);
+ g=x.createRadialGradient(W*.92,0,0,W*.92,0,W*.95);g.addColorStop(0,'rgba(201,162,74,.26)');g.addColorStop(1,'rgba(201,162,74,0)');x.fillStyle=g;x.fillRect(0,0,W,H);
+ x.lineWidth=2;x.strokeStyle='rgba(201,162,74,.6)';rr(x,44,44,W-88,H-88,40);x.stroke();x.strokeStyle='rgba(201,162,74,.22)';rr(x,60,60,W-120,H-120,30);x.stroke();
+ const L=S.log[k]||{},items=reportItems(k),n=items.filter(i=>i.ok).length,pre=k<S.startDate;
+ x.textBaseline='alphabetic';x.textAlign='left';
+ x.fillStyle='#d6b25e';x.font=`700 28px ${SANS}`;spaced(x,pre?'PRACTICE REPORT':'DAILY REPORT',112,172,7);
+ const title=`For ${S.her}`;let fs=80;x.font=`500 ${fs}px ${SERIF}`;while(x.measureText(title).width>W-224&&fs>40){fs-=4;x.font=`500 ${fs}px ${SERIF}`}
+ x.fillStyle='#f3f1eb';x.fillText(title,110,266);
+ x.fillStyle='#9ba1b5';x.font=`400 36px ${SANS}`;x.fillText(longDate(k),112,324);
+ x.fillStyle='rgba(201,162,74,.6)';x.fillRect(112,370,110,3);
+ const top=452,bottom=H-372,step=Math.min(86,(bottom-top)/Math.max(items.length,1)),fz=Math.max(24,Math.min(38,step*.47));
+ items.forEach((it,i)=>{const y=top+i*step,cx=136,cy=y-fz*.34,r=fz*.6;
+  x.beginPath();x.arc(cx,cy,r,0,Math.PI*2);
+  if(it.ok){x.fillStyle='#c9a24a';x.fill();x.strokeStyle='#121828';x.lineWidth=fz*.13;x.lineCap='round';x.lineJoin='round';x.beginPath();x.moveTo(cx-r*.42,cy+r*.02);x.lineTo(cx-r*.12,cy+r*.32);x.lineTo(cx+r*.45,cy-r*.32);x.stroke()}
+  else{x.strokeStyle='rgba(243,241,235,.32)';x.lineWidth=3;x.stroke()}
+  x.fillStyle=it.ok?'#f3f1eb':'#6d7491';x.font=`${it.ok?500:400} ${fz}px ${SANS}`;x.fillText(clip(x,it.t,W-320),196,y)});
+ if(!items.length){x.fillStyle='#9ba1b5';x.font=`italic 400 40px ${SERIF}`;x.fillText('No duties set today.',112,top)}
+ x.fillStyle='rgba(243,241,235,.13)';x.fillRect(112,H-306,W-224,2);
+ const st=streakInfo();
+ if(pre){x.fillStyle='#d6b25e';x.font=`500 84px ${SERIF}`;x.fillText('Practice',106,H-150);x.fillStyle='#9ba1b5';x.font=`400 30px ${SANS}`;x.fillText(`Service begins ${shortDate(S.startDate)}`,112,H-104)}
+ else{x.fillStyle='#d6b25e';x.font=`500 156px ${SERIF}`;const sn=String(st.cur);x.fillText(sn,104,H-122);const sw=x.measureText(sn).width;
+  x.fillStyle='#f3f1eb';x.font=`600 36px ${SANS}`;x.fillText('day streak',104+sw+26,H-192);
+  x.fillStyle='#9ba1b5';x.font=`400 31px ${SANS}`;x.fillText(RANKS[rankIndex(st.cur)].n,104+sw+26,H-146)}
+ x.textAlign='right';
+ x.fillStyle='#9ba1b5';x.font=`400 30px ${SANS}`;x.fillText(L.away?'Away from the house':items.length&&n===items.length?'All duties done':`${n} of ${items.length} done`,W-112,H-192);
+ x.fillStyle='#f3f1eb';x.font=`italic 500 44px ${SERIF}`;x.fillText(`— ${S.me}`,W-112,H-136);
+ x.textAlign='left';
+ if(L.insp){const col={approved:'#d6b25e',passable:'#c9ccd8',redo:'#ff7a88'}[L.insp.v];x.save();x.globalAlpha=.92;x.translate(W-262,top+40);x.rotate(-.16);x.strokeStyle=col;x.fillStyle=col;x.lineWidth=7;rr(x,-158,-58,316,116,18);x.stroke();x.lineWidth=2.5;rr(x,-144,-44,288,88,11);x.stroke();
+  x.textAlign='center';x.textBaseline='middle';const lbl=VERD[L.insp.v].n.toUpperCase(),ls='letterSpacing' in x;let sz=52;const fit=()=>{x.font=`900 ${sz}px ${SANS}`;if(ls)x.letterSpacing=Math.round(sz*.1)+'px';return x.measureText(lbl).width};while(fit()>244&&sz>24)sz-=2;x.fillText(lbl,ls?Math.round(sz*.05):0,3);if(ls)x.letterSpacing='0px';x.restore()}
+ return c}
+function reportText(k){const L=S.log[k]||{},items=reportItems(k),n=items.filter(i=>i.ok).length,st=streakInfo(),pre=k<S.startDate;
+ return[`${pre?'Practice report':'Daily report'} for ${S.her}`,longDate(k),'',...items.map(i=>`${i.ok?'✅':'⬜️'} ${i.t}`),'',
+  L.away?'Away from the house today.':items.length&&n===items.length?'All duties done.':`${n} of ${items.length} done.`,
+  pre?`Service begins ${shortDate(S.startDate)}.`:`Streak: ${plural(st.cur,'day')} (${RANKS[rankIndex(st.cur)].n}).`,
+  ...(L.insp?[`Inspection: ${VERD[L.insp.v].n}.`]:[]),`— ${S.me}`].join('\n')}
+let reportFile=null,reportKey=null;
+function openReport(k=todayKey()){
+ reportKey=k;reportFile=null;const c=drawReport(k);let url='';try{url=c.toDataURL('image/png')}catch(e){}
+ try{c.toBlob(b=>{if(b)reportFile=new File([b],`duties-report-${k}.png`,{type:'image/png'})},'image/png')}catch(e){}
+ sheet(`<div class="grab"></div><h2>Today’s report</h2><p class="lede">For ${esc(S.her)}. Send it straight to her, or press and hold the card to save it.</p>
+ ${url?`<img class="rep" src="${url}" alt="Report card for ${longDate(k)}">`:''}
+ <button class="btn brass" data-act="share">${ic('share')} Send to her</button><button class="btn ghost" data-act="copy">Copy as text</button>`)}
+async function shareReport(){
+ const text=reportText(reportKey);
+ try{if(reportFile&&navigator.canShare&&navigator.canShare({files:[reportFile]})){await navigator.share({files:[reportFile]});return}
+  if(navigator.share){await navigator.share({text});return}}
+ catch(e){if(e&&e.name==='AbortError')return}
+ copyText(text)}
+async function copyText(text){
+ try{await navigator.clipboard.writeText(text);toast('Copied. Paste it to her.');return}catch(e){}
+ const ta=document.createElement('textarea');ta.value=text;ta.style.position='fixed';ta.style.opacity='0';document.body.appendChild(ta);ta.select();
+ let ok=false;try{ok=document.execCommand('copy')}catch(e){}ta.remove();toast(ok?'Copied. Paste it to her.':'Couldn’t copy here. Press and hold the card instead.')}
+
+/* Inspection */
+let sheetCtx=null;
+function openInspection(){const k=todayKey(),L=lg(k);sheetCtx={type:'insp',k,pick:L.insp?L.insp.v:null,note:L.insp?.note||''};drawInspection()}
+function drawInspection(){
+ const c=sheetCtx,L=lg(c.k),due=dueFor(c.k).map(dutyById).filter(Boolean),extra=neededOn(c.k);
+ const rows=due.map(d=>`<div class="mrow ${L.done[d.id]?'ok':'no'}"><span class="mk2">${ic(L.done[d.id]?'check':'x')}</span>${esc(d.title)}</div>`).join('')+extra.map(d=>`<div class="mrow ok"><span class="mk2">${ic('check')}</span>${esc(d.title)}</div>`).join('');
+ sheet(`<div class="grab"></div><div class="kick">Inspection</div><h2>Over to you, ${esc(addr())}.</h2>
+ <p class="lede">${esc(S.me)}, hand over the phone. This is what he says he’s done today. Check the house, then stamp it.</p>
+ <div class="list mini">${rows||'<div class="mrow no">No duties today.</div>'}</div>
+ <div class="lab">Verdict</div><div class="verd">${Object.keys(VERD).map(v=>`<button class="vo ${v}" data-v="${v}" aria-pressed="${c.pick===v}"><b>${VERD[v].n}</b><small>${VERD[v].s}</small></button>`).join('')}</div>
+ <label class="field" style="margin-top:12px"><span>A note for him</span><textarea id="inote" rows="2" maxlength="140" placeholder="Optional. Be honest.">${esc(c.note)}</textarea></label>
+ <button class="btn" data-act="stamp" ${c.pick?'':'disabled'}>${ic('stamp')} Stamp it</button>`,{keep:true})}
+function doStamp(){
+ const c=sheetCtx,L=lg(c.k),note=($('#inote')?.value||'').trim();
+ L.insp={v:c.pick,note,at:Date.now()};save();
+ const bs=$('#bigstamp');bs.className='bigstamp '+c.pick;bs.firstElementChild.textContent=VERD[c.pick].n;bs.hidden=false;
+ const v=c.pick;closeSheet();render();
+ setTimeout(()=>{bs.hidden=true;if(v==='approved'){confetti();toast('Stamped. Well earned.')}else if(v==='redo')toast('Redo ordered. Back to work.');else toast('Passable. Aim higher tomorrow.')},1100)}
+
+/* Day detail */
+function openDay(k){sheetCtx={type:'day',k};drawDay()}
+function drawDay(){
+ const k=sheetCtx.k,L=S.log[k]||{},done=L.done||{},due=dueFor(k).map(dutyById).filter(Boolean),extra=neededOn(k),s=status(k),t=todayKey(),pre=k<S.startDate;
+ const n=due.filter(d=>done[d.id]).length;
+ const line=s==='away'?'Away from the house.':s==='rest'?'No duties were due.':s==='full'?'Every duty done.':`${n} of ${due.length} done${k===t?' so far':''}.`;
+ sheet(`<div class="grab"></div><div class="kick">${pre?'Practice day':k===t?'Today':'Record'}</div><h2>${longDate(k)}</h2><p class="lede">${line}</p>
+ ${due.length?`<div class="list">${due.map(d=>dutyRow(d,!!done[d.id],done[d.id],'dtog',k)).join('')}</div>`:''}
+ ${extra.length?`<div class="lab">As needed</div><div class="list mini">${extra.map(d=>`<div class="mrow ok"><span class="mk2">${ic('check')}</span>${esc(d.title)}</div>`).join('')}</div>`:''}
+ ${L.insp?`<div class="inote"><span class="chip ${L.insp.v}">${ic('stamp')}${VERD[L.insp.v].n}</span>${L.insp.note?`<p>“${esc(L.insp.note)}”</p>`:''}</div>`:''}
+ <button class="tog" data-act="dayaway" role="switch" aria-checked="${!!L.away}"><span class="dt"><b>Away from the house</b><small>Pauses the streak without breaking it.</small></span><span class="sw"></span></button>
+ <p class="foot">Did something but forgot to tick it? Tap it here to put the record straight.</p>`,{keep:true})}
+function dayToggle(k,id){const L=lg(k);if(!L.due)L.due=computeDue(k);const on=!L.done[id];if(on)L.done[id]=Date.now();else delete L.done[id];save();afterChange(k);render();if(on)just=id;drawDay();just=null}
+
+/* Duty editor */
+function openDuty(id){const d=id?dutyById(id):null;sheetCtx={type:'duty',armed:false,d:d?{...d,days:[...(d.days||[])]}:{id:null,title:'',hint:'',block:'morning',freq:'daily',days:[]}};drawDuty()}
+function readDuty(){const d=sheetCtx.d,ti=$('#d-title'),hi=$('#d-hint');if(ti)d.title=ti.value;if(hi)d.hint=hi.value}
+function drawDuty(){
+ const d=sheetCtx.d;
+ sheet(`<div class="grab"></div><h2>${d.id?'Edit duty':'New duty'}</h2><p class="lede">${d.id?'Changes apply from today. Past days keep what was due then.':'Something she’d notice. Keep it short.'}</p>
+ <label class="field"><span>Duty</span><input id="d-title" value="${esc(d.title)}" placeholder="e.g. Make the bed" maxlength="60" autocomplete="off"></label>
+ <label class="field"><span>Detail</span><input id="d-hint" value="${esc(d.hint)}" placeholder="Optional, e.g. Pillows straight" maxlength="80" autocomplete="off"></label>
+ <div class="lab">When</div><div class="seg">${ORDER.map(b=>`<button data-blk="${b}" aria-pressed="${d.block===b}">${BLK[b].short}</button>`).join('')}</div>
+ ${d.block!=='needed'?`<div class="lab">Repeat</div><div class="seg">${[['daily','Every day'],['days','Some days']].map(([f,n])=>`<button data-frq="${f}" aria-pressed="${d.freq===f}">${n}</button>`).join('')}</div>
+ ${d.freq==='days'?`<div class="wds">${WD.map(([i,n])=>`<button data-wd="${i}" aria-pressed="${d.days.includes(i)}">${n}</button>`).join('')}</div>`:''}`:''}
+ <button class="btn" data-act="dsave">Save</button>
+ ${d.id?`<button class="btn danger${sheetCtx.armed?' armed':''}" data-act="ddel">${sheetCtx.armed?'Tap again to remove':'Remove this duty'}</button>`:''}`,{keep:true})}
+function saveDuty(){
+ readDuty();const d=sheetCtx.d;d.title=d.title.trim();d.hint=d.hint.trim();
+ if(!d.title){toast('Give the duty a name.');$('#d-title')?.focus();return}
+ if(d.block==='needed')d.freq='needed';else if(d.freq==='needed')d.freq='daily';
+ if(d.freq==='days'&&!d.days.length){toast('Pick at least one day.');return}
+ if(d.freq!=='days')d.days=[];
+ if(d.id){const i=S.duties.findIndex(x=>x.id===d.id);S.duties[i]={...S.duties[i],...d}}else{d.id='d'+Date.now().toString(36);S.duties.push(d)}
+ save();closeSheet();render();toast('Duty saved.')}
+
+/* Rules, onboarding, data */
+function openRules(){sheetCtx={type:'rules'};sheet(`<div class="grab"></div><h2>House rules</h2><p class="lede">In her words. One rule per line.</p>
+ <label class="field"><span>Rules</span><textarea id="r-text" rows="8">${esc(S.rules.join('\n'))}</textarea></label><button class="btn" data-act="rsave">Save rules</button>`)}
+function openWelcome(){
+ const standalone=matchMedia('(display-mode: standalone)').matches||navigator.standalone;
+ sheet(`<div class="grab"></div><div class="emb">${ic('crown')}</div><h2>Welcome to Duties.</h2>
+ <p class="lede">Your daily duties for her house, a streak that resets if you skip a day, and an inspection only she can stamp. Two weeks is the bet. Beat it.</p>
+ <label class="field"><span>Service starts</span><input type="date" id="o-start" value="${S.startDate}"></label>
+ <label class="field"><span>She’s known as</span><input id="o-her" value="${esc(S.her)}" maxlength="30" autocomplete="off"></label>
+ ${standalone?'':'<div class="tip"><b>Put it on your Home Screen</b>In Safari, tap Share, then Add to Home Screen. It’ll open like a normal app and work without signal.</div>'}
+ <button class="btn brass" data-act="begin">Begin</button>`,{lock:true})}
+function backup(){
+ const blob=new Blob([JSON.stringify(S,null,1)],{type:'application/json'}),a=document.createElement('a');
+ a.href=URL.createObjectURL(blob);a.download=`duties-backup-${todayKey()}.json`;document.body.appendChild(a);a.click();a.remove();setTimeout(()=>URL.revokeObjectURL(a.href),4000);toast('Backup saved.')}
+$('#restore').addEventListener('change',e=>{const f=e.target.files[0];if(!f)return;const r=new FileReader();
+ r.onload=()=>{try{const o=JSON.parse(r.result);if(!Array.isArray(o.duties)||typeof o.log!=='object')throw 0;S=migrate(o);S.onboarded=true;save();calMonth=null;render();toast('Backup restored.')}catch(err){toast('That file isn’t a Duties backup.')}e.target.value=''};r.readAsText(f)});
+function openReset(){sheetCtx={type:'reset',armed:false};drawReset()}
+function drawReset(){sheet(`<div class="grab"></div><h2>Start over?</h2><p class="lede">This wipes your whole record, streak and ranks on this phone, and puts the duties back to the originals. Save a backup first if you might want it back.</p>
+ <button class="btn danger${sheetCtx.armed?' armed':''}" data-act="doreset">${sheetCtx.armed?'Tap again to wipe everything':'Wipe everything'}</button><button class="btn ghost" data-act="close">Keep my record</button>`,{keep:true})}
+
+/* ---------- Events ---------- */
+document.addEventListener('click',e=>{
+ const b=e.target.closest('button,[data-tab]');if(!b)return;const ds=b.dataset;
+ if(ds.tab){tab=ds.tab;render();window.scrollTo(0,0);return}
+ if(ds.tog)return toggle(ds.tog);
+ if(ds.need)return toggleNeeded(ds.need);
+ if(ds.dtog){const[k,id]=ds.dtog.split('|');return dayToggle(k,id)}
+ if(ds.day)return openDay(ds.day);
+ if(ds.cal){const[y,m]=calMonth.split('-').map(Number);const d=new Date(y,m-1+Number(ds.cal),1,12);calMonth=`${d.getFullYear()}-${pad(d.getMonth()+1)}`;renderRecord();return}
+ if(ds.edit)return openDuty(ds.edit);
+ if(ds.v&&sheetCtx?.type==='insp'){sheetCtx.note=$('#inote')?.value||'';sheetCtx.pick=ds.v;return drawInspection()}
+ if(ds.blk&&sheetCtx?.type==='duty'){readDuty();sheetCtx.d.block=ds.blk;return drawDuty()}
+ if(ds.frq&&sheetCtx?.type==='duty'){readDuty();sheetCtx.d.freq=ds.frq;return drawDuty()}
+ if(ds.wd&&sheetCtx?.type==='duty'){readDuty();const i=Number(ds.wd),a=sheetCtx.d.days;sheetCtx.d.days=a.includes(i)?a.filter(x=>x!==i):[...a,i];return drawDuty()}
+ switch(ds.act){
+  case'report':return openReport();
+  case'share':return shareReport();
+  case'copy':return copyText(reportText(reportKey));
+  case'inspect':return openInspection();
+  case'stamp':return doStamp();
+  case'away':{const t=todayKey(),L=lg(t);L.away=!L.away;save();afterChange(t);render();if(L.away)toast('Off duty today. Your streak is safe.');return}
+  case'dayaway':{const k=sheetCtx.k,L=lg(k);if(!L.due)L.due=computeDue(k);L.away=!L.away;save();afterChange(k);render();return drawDay()}
+  case'add':return openDuty(null);
+  case'dsave':return saveDuty();
+  case'ddel':if(!sheetCtx.armed){readDuty();sheetCtx.armed=true;return drawDuty()}{const d=dutyById(sheetCtx.d.id);if(d)d.archived=true;save();closeSheet();render();toast('Duty removed.');return}
+  case'rules':return openRules();
+  case'rsave':{S.rules=($('#r-text').value||'').split('\n').map(s=>s.trim()).filter(Boolean);save();closeSheet();render();return}
+  case'begin':{const sd=$('#o-start').value,h=$('#o-her').value.trim();if(sd)S.startDate=sd;if(h)S.her=h;S.onboarded=true;calMonth=null;save();closeSheet();render();return}
+  case'backup':return backup();
+  case'restore':return $('#restore').click();
+  case'reset':return openReset();
+  case'doreset':if(!sheetCtx.armed){sheetCtx.armed=true;return drawReset()}S=fresh();save();calMonth=null;closeSheet();tab='today';render();openWelcome();return;
+  case'close':return closeSheet();
+  case'over-close':$('#over').hidden=true;return;
+  case'over-report':$('#over').hidden=true;return openReport();
+ }});
+$('#scrim').addEventListener('click',e=>{if(e.target.id==='scrim'&&!e.currentTarget.dataset.lock)closeSheet()});
+document.addEventListener('keydown',e=>{if(e.key==='Escape'){if(!$('#over').hidden)$('#over').hidden=true;else if(!$('#scrim').hidden&&!$('#scrim').dataset.lock)closeSheet()}});
+document.addEventListener('change',e=>{
+ const el=e.target;
+ if(el.id==='set-start'){if(el.value){S.startDate=el.value;calMonth=null;save();render()}else el.value=S.startDate}
+ else if(el.id==='set-her'){const v=el.value.trim();if(v){S.her=v;save();render()}else el.value=S.her}
+ else if(el.id==='set-me'){const v=el.value.trim();if(v){S.me=v;save();render()}else el.value=S.me}
+ else if(el.id==='set-roll'){S.rollover=Number(el.value);save();render()}});
+let lastKey=todayKey();
+function tick(){const k=todayKey();if(k!==lastKey){lastKey=k;calMonth=null;render()}}
+document.addEventListener('visibilitychange',()=>{if(!document.hidden)tick()});
+setInterval(tick,60000);
+
+render();
+if(!S.onboarded)openWelcome();
+let inFrame=true;try{inFrame=window.top!==window}catch(e){}
+if('serviceWorker' in navigator&&location.protocol==='https:'&&!inFrame)navigator.serviceWorker.register('sw.js').catch(()=>{});
+</script>
+</body>
+</html>
